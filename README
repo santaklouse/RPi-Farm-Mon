@@ -62,7 +62,6 @@ syntax enable
 set nobackup                                                                    
 set noswapfile
 set cursorline
-set smartindent
 set visualbell
 set expandtab
 set tabstop=4
