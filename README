@@ -1,5 +1,9 @@
 # Raspberry Pi Initial Setup (with Raspbian Jessie Lite)
 
+sudo sh -c 'echo "rpi" > /etc/hostname'
+sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
+sudo sh -c 'echo "127.0.1.1       rpi" >> /etc/hosts'
+
 sudo sh -c 'cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
 auto lo
@@ -84,9 +88,5 @@ sudo crontab -e
     :
     :
     55 * * * * /usr/sbin/ntpdate ntp.nict.jp >/dev/null 2>&1
-
-sudo sh -c 'echo "rpi" > /etc/hostname'
-sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
-sudo sh -c 'echo "127.0.1.1       rpi" >> /etc/hosts'
 
 sudo reboot
