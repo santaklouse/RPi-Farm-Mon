@@ -81,8 +81,12 @@ sudo apt-get -y install ntpdate
 sudo ntpdate ntp.nict.jp
 sudo crontab -e
 
-:
-:
-55 * * * * /usr/sbin/ntpdate ntp.nict.jp
+    :
+    :
+    55 * * * * /usr/sbin/ntpdate ntp.nict.jp
+
+sudo sh -c 'echo "rpi" > /etc/hostname'
+sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
+sudo sh -c 'echo "127.0.1.1       rpi" >> /etc/hosts'
 
 sudo reboot
