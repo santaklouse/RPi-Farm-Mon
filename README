@@ -83,7 +83,7 @@ sudo crontab -e
 
     :
     :
-    55 * * * * /usr/sbin/ntpdate ntp.nict.jp
+    55 * * * * /usr/sbin/ntpdate ntp.nict.jp >/dev/null 2>&1
 
 sudo sh -c 'echo "rpi" > /etc/hostname'
 sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
