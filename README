@@ -19,8 +19,8 @@ country=JP
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 network={
-    ssid="SSID"
-    psk="PASSWORD"
+    ssid="SSID"         # < Change as you need
+    psk="PASSWORD"      # < Change as you need
 }
 EOF'
 
@@ -42,8 +42,10 @@ net.ipv6.conf.eth0.disable_ipv6 = 1
 net.ipv6.conf.[interface].disable_ipv6 = 1
 EOF'
 
-sudo ifdown wlan0
-sudo ifup wlan0
+sudo systemctl enable ssh
+sudo systemctl enable avahi-daemon
+
+reboot
 
 sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
 sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
@@ -62,9 +64,6 @@ EOF'
 rm -rf /tmp/*
 rm -rf /var/tmp/*
 sudo rm -rf /var/log/*
-
-sudo systemctl enable ssh
-sudo systemctl enable avahi-daemon
 
 sudo apt-get install -y vim
 
