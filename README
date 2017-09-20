@@ -45,7 +45,7 @@ EOF'
 sudo systemctl enable ssh
 sudo systemctl enable avahi-daemon
 
-reboot
+sudo reboot
 
 sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
 sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
