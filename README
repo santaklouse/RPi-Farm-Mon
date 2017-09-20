@@ -55,18 +55,8 @@ sudo apt-get -y upgrade
 sudo rpi-update
 
 sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
-sudo sh -c 'cat <<EOF >> /etc/fstab
-    tmpfs   /tmp            tmpfs defaults,size=32m,noatime,mode=1777 0 0
-    tmpfs   /var/tmp        tmpfs defaults,size=16m,noatime,mode=1777 0 0
-    tmpfs   /var/log        tmpfs defaults,size=16m,noatime,mode=0755 0 0
-EOF'
-
-rm -rf /tmp/*
-rm -rf /var/tmp/*
-sudo rm -rf /var/log/*
 
 sudo apt-get install -y vim
-
 cat <<EOF > ~/.vimrc
 syntax enable
 set nobackup                                                                    
