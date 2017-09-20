@@ -1,1 +1,88 @@
-# rpi-initial-setup
+# Raspberry Pi Initial Setup (with Raspbian Jessie Lite)
+
+sudo sh -c 'cat <<EOF > /etc/network/interfaces 
+source-directory /etc/network/interfaces.d
+auto lo
+iface lo inet loopback
+iface eth0 inet manual
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+EOF'
+
+sudo sh -c 'cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
+country=JP
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    ssid="SSID"
+    psk="PASSWORD"
+}
+EOF'
+
+# Disabling IPv6
+# https://www.raspberrypi.org/forums/viewtopic.php?t=138899
+
+sudo sh -c 'cat <<EOF > /etc/modprobe.d/ipv6.conf
+alias net-pf-10 off
+alias ipv6 off
+options ipv6 disable_ipv6=1
+blacklist ipv6
+EOF'
+
+sudo sh -c 'cat <<EOF >> /etc/sysctl.conf
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+net.ipv6.conf.eth0.disable_ipv6 = 1
+net.ipv6.conf.[interface].disable_ipv6 = 1
+EOF'
+
+sudo ifdown wlan0
+sudo ifup wlan0
+
+sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
+sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
+sudo apt-get update
+sudo apt-get -y upgrade
+
+sudo rpi-update
+
+sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
+sudo sh -c 'cat <<EOF >> /etc/fstab
+    tmpfs   /tmp            tmpfs defaults,size=32m,noatime,mode=1777 0 0
+    tmpfs   /var/tmp        tmpfs defaults,size=16m,noatime,mode=1777 0 0
+    tmpfs   /var/log        tmpfs defaults,size=16m,noatime,mode=0755 0 0
+EOF'
+
+rm -rf /tmp/*
+rm -rf /var/tmp/*
+sudo rm -rf /var/log/*
+
+sudo systemctl enable ssh
+sudo systemctl enable avahi-daemon
+
+sudo apt-get install -y vim
+
+cat <<EOF > ~/.vimrc
+syntax enable
+set nobackup                                                                    
+set noswapfile
+set cursorline
+set smartindent
+set visualbell
+set expandtab
+set tabstop=4
+set shiftwidth=4
+EOF
+
+sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+sudo apt-get -y install ntpdate
+sudo ntpdate ntp.nict.jp
+sudo crontab -e
+
+:
+:
+55 * * * * /usr/sbin/ntpdate ntp.nict.jp
+
+sudo reboot
