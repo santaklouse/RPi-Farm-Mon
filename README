@@ -19,8 +19,8 @@ country=JP
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 network={
-    ssid="SSID"         # < Change as you need
-    psk="PASSWORD"      # < Change as you need
+    ssid="SSID"                 # < Change as you need
+    psk="PASSWORD"              # < Change as you need
 }
 EOF'
 
@@ -56,12 +56,11 @@ sudo rpi-update
 
 sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
 
-sudo apt-get install -y vim
+sudo apt-get install -y vim ntpdate
 cat <<EOF > ~/.vimrc
 syntax enable
 set nobackup
 set noswapfile
-set cursorline
 set visualbell
 set expandtab
 set tabstop=4
@@ -69,7 +68,6 @@ set shiftwidth=4
 EOF
 
 sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-sudo apt-get -y install ntpdate
 sudo ntpdate ntp.nict.jp
 sudo crontab -e
 
