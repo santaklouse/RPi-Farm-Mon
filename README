@@ -1,9 +1,11 @@
 # Raspberry Pi Initial Setup (with Raspbian Jessie Lite)
 
-sudo sh -c 'echo "rpi" > /etc/hostname'
+# new hostname is "rucora"
+sudo sh -c 'echo "rucola" > /etc/hostname'
 sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
-sudo sh -c 'echo "127.0.1.1       rpi" >> /etc/hosts'
+sudo sh -c 'echo "127.0.1.1       rucola" >> /etc/hosts'
 
+# Enable Wireless LAN
 sudo sh -c 'cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
 auto lo
@@ -24,6 +26,9 @@ network={
 }
 EOF'
 
+sudo ifdown wlan0
+sudo ifup wlan0
+
 # Disabling IPv6
 # https://www.raspberrypi.org/forums/viewtopic.php?t=138899
 
@@ -42,20 +47,34 @@ net.ipv6.conf.eth0.disable_ipv6 = 1
 net.ipv6.conf.[interface].disable_ipv6 = 1
 EOF'
 
-sudo systemctl enable ssh
-sudo systemctl enable avahi-daemon
-
-sudo reboot
-
+# Remove unnecessary packages
 sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
+
+# Update packages
 sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
 sudo apt-get update
 sudo apt-get -y upgrade
 
+# Update Firmware
 sudo rpi-update
 
+# Configure gpu memory assignment
 sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
 
+# Time Setting
+sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+sudo ntpdate ntp.nict.jp
+sudo crontab -e
+
+    :
+    :
+    55 * * * * /usr/sbin/ntpdate ntp.nict.jp >/dev/null 2>&1
+
+# Enable required daemon
+sudo systemctl enable ssh
+sudo systemctl enable avahi-daemon
+
+# Install additional packages
 sudo apt-get install -y vim ntpdate
 cat <<EOF > ~/.vimrc
 syntax enable
@@ -66,13 +85,5 @@ set expandtab
 set tabstop=4
 set shiftwidth=4
 EOF
-
-sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-sudo ntpdate ntp.nict.jp
-sudo crontab -e
-
-    :
-    :
-    55 * * * * /usr/sbin/ntpdate ntp.nict.jp >/dev/null 2>&1
 
 sudo reboot
