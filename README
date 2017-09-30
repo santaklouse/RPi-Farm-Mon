@@ -61,21 +61,8 @@ sudo rpi-update
 # Configure gpu memory assignment
 sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
 
-# Time Setting
-sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-sudo ntpdate ntp.nict.jp
-sudo crontab -e
-
-    :
-    :
-    55 * * * * /usr/sbin/ntpdate ntp.nict.jp >/dev/null 2>&1
-
-# Enable required daemon
-sudo systemctl enable ssh
-sudo systemctl enable avahi-daemon
-
 # Install additional packages
-sudo apt-get install -y vim ntpdate
+sudo apt-get install -y vim
 cat <<EOF > ~/.vimrc
 syntax enable
 set nobackup
@@ -85,5 +72,19 @@ set expandtab
 set tabstop=4
 set shiftwidth=4
 EOF
+
+# Time Setting
+sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+sudo apt-get install -y ntpdate
+sudo ntpdate ntp.nict.jp
+sudo crontab -e
+
+    :
+    :
+    55 * * * * ntpdate ntp.nict.jp >/dev/null 2>&1
+
+# Enable required daemon
+sudo systemctl enable ssh
+sudo systemctl enable avahi-daemon
 
 sudo reboot
