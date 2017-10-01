@@ -1,9 +1,9 @@
 # Raspberry Pi Initial Setup (For Raspbian Jessie Lite)
 
-# new hostname is "rucora"
-sudo sh -c 'echo "rucola" > /etc/hostname'
+# new hostname is "broccoli"
+sudo sh -c 'echo "broccoli" > /etc/hostname'
 sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
-sudo sh -c 'echo "127.0.1.1       rucola" >> /etc/hosts'
+sudo sh -c 'echo "127.0.1.1       broccoli" >> /etc/hosts'
 
 # Enable Wireless LAN
 sudo sh -c 'cat <<EOF > /etc/network/interfaces 
