@@ -1,4 +1,4 @@
-# Raspberry Pi Initial Setup (with Raspbian Jessie Lite)
+# Raspberry Pi Initial Setup (For Raspbian Jessie Lite)
 
 # new hostname is "rucora"
 sudo sh -c 'echo "rucola" > /etc/hostname'
