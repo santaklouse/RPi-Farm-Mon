@@ -46,7 +46,7 @@ net.ipv6.conf.[interface].disable_ipv6 = 1
 EOF'
 
 # Remove unnecessary packages
-sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp perl rsyslog vim-tiny
+sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
 
 # Update packages
 sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
