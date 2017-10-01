@@ -8,11 +8,8 @@ sudo sh -c 'echo "127.0.1.1       broccoli" >> /etc/hosts'
 # Enable Wireless LAN
 sudo sh -c 'cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
-
 auto lo
-
 iface lo inet loopback
-
 allow-hotplug wlan0
 iface wlan0 inet manual
 wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
@@ -28,8 +25,7 @@ network={
 }
 EOF'
 
-sudo ifdown wlan0
-sudo ifup wlan0
+sudo systemctl daemon-reload
 
 # Disabling IPv6
 # https://www.raspberrypi.org/forums/viewtopic.php?t=138899
@@ -50,7 +46,7 @@ net.ipv6.conf.[interface].disable_ipv6 = 1
 EOF'
 
 # Remove unnecessary packages
-sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp rsyslog vim-tiny
+sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed nano nfs-common ntp perl rsyslog vim-tiny
 
 # Update packages
 sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
