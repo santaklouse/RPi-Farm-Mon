@@ -8,11 +8,13 @@ sudo sh -c 'echo "127.0.1.1       rucola" >> /etc/hosts'
 # Enable Wireless LAN
 sudo sh -c 'cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
+
 auto lo
+
 iface lo inet loopback
-iface eth0 inet manual
+
 allow-hotplug wlan0
-iface wlan0 inet dhcp
+iface wlan0 inet manual
 wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
 EOF'
 
