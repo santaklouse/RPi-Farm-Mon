@@ -1,8 +1,7 @@
 # Raspberry Pi Initial Setup (For Raspbian Jessie Lite)
 
 # For only Pi 3
-echo "dtoverlay=pi3-miniuart-bt" > /boot/config.txt
-echo "dwc_otg.lpm_enable=0 console=tty1 console=serial0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait" > /boot/cmdline.txt
+echo "dtoverlay=pi3-miniuart-bt" >> /Volumes/boot/config.txt
 
 # new hostname is "broccoli"
 sudo sh -c 'echo "broccoli" > /etc/hostname'
