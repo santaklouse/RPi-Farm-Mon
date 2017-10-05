@@ -3,22 +3,31 @@
 # For only Pi 3
 echo "dtoverlay=pi3-miniuart-bt" >> /Volumes/boot/config.txt
 
+sudo bash
+
 # new hostname is "broccoli"
-sudo sh -c 'echo "broccoli" > /etc/hostname'
-sudo sh -c 'echo "127.0.0.1       localhost" > /etc/hosts'
-sudo sh -c 'echo "127.0.1.1       broccoli" >> /etc/hosts'
+echo "broccoli" > /etc/hostname
+echo "127.0.0.1       localhost" > /etc/hosts
+echo "127.0.1.1       broccoli" >> /etc/hosts
 
 # Enable Wireless LAN
-sudo sh -c 'cat <<EOF > /etc/network/interfaces 
+
+echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
+
+cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
 auto lo
 iface lo inet loopback
 allow-hotplug wlan0
-iface wlan0 inet manual
-wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-EOF'
+iface wlan0 inet static
+address 192.168.100.1
+netmask 255.255.255.0
+allow-hotplug wlan1
+iface wlan1 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+EOF
 
-sudo sh -c 'cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
+cat <<EOF > /etc/wpa_supplicant/wpa_supplicant.conf
 country=JP
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
@@ -26,65 +35,96 @@ network={
     ssid="SSID"                 # < Change as you need
     psk="PASSWORD"              # < Change as you need
 }
-EOF'
-
-sudo ifup wlan0
+EOF
 
 # Disabling IPv6
 # https://www.raspberrypi.org/forums/viewtopic.php?t=138899
 
-sudo sh -c 'cat <<EOF > /etc/modprobe.d/ipv6.conf
+cat <<EOF > /etc/modprobe.d/ipv6.conf
 alias net-pf-10 off
 alias ipv6 off
 options ipv6 disable_ipv6=1
 blacklist ipv6
-EOF'
+EOF
 
-sudo sh -c 'cat <<EOF >> /etc/sysctl.conf
+cat <<EOF >> /etc/sysctl.conf
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 net.ipv6.conf.eth0.disable_ipv6 = 1
 net.ipv6.conf.[interface].disable_ipv6 = 1
-EOF'
-
-# Remove unnecessary packages
-sudo apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed fbset kbd keyboard-configuration libfreetype6:armhf libgpm2:armhf liblockfile1:armhf libpng12-0:armhf nano nfs-common ntp rsyslog vim-tiny v4l-utils xauth xdg-user-dirs xkb-data
-# Update packages
-sudo sh -c "echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list"
-sudo apt-get update
-sudo apt-get -y upgrade
-
-# Update Firmware
-sudo rpi-update
-
-# Configure gpu memory assignment
-sudo sh -c "echo 'gpu_mem=16' >> /boot/config.txt"
-
-# Install additional packages
-sudo apt-get install -y vim
-cat <<EOF > ~/.vimrc
-syntax enable
-set nobackup
-set noswapfile
-set visualbell
-set expandtab
-set tabstop=4
-set shiftwidth=4
 EOF
 
-# Time Setting
-sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-sudo apt-get install -y ntpdate
-sudo ntpdate ntp.nict.jp
-sudo crontab -e
+ifdown wlan1
+ifup wlan1
 
-    :
-    :
+echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list
+apt-get update
+apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed fbset kbd keyboard-configuration libfreetype6:armhf libpng12-0:armhf nano nfs-common ntp rsyslog vim-tiny v4l-utils xauth xdg-user-dirs xkb-data
+apt-get autoremove --purge -y
+apt-get -y upgrade
+
+# Install additional packages
+sudo apt-get install -y vim ntpdate git
+
+# Time Setting
+ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+ntpdate ntp.nict.jp
+crontab -e
+
     55 * * * * ntpdate ntp.nict.jp >/dev/null 2>&1
 
 # Enable required daemon
-sudo systemctl enable ssh
-sudo systemctl enable avahi-daemon
+systemctl enable ssh
+systemctl enable avahi-daemon
 
-sudo reboot
+# Update Firmware
+rpi-update
+
+reboot
+
+# Wireless Router Setting
+# https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
+
+sudo bash
+apt-get install -y dnsmasq hostapd
+systemctl stop dnsmasq
+systemctl stop hostapd
+
+# DHCP Server
+echo "interface=wlan0" > /etc/dnsmasq.conf
+echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.conf
+
+# hostapd
+cat <<EOF > /etc/hostapd/hostapd.conf
+interface=wlan0
+driver=nl80211
+#driver=rtl871xdrv
+ssid=raspberry
+hw_mode=g
+channel=6
+macaddr_acl=0
+auth_algs=1
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=raspberry
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+EOF
+echo DAEMON_CONF="/etc/hostapd/hostapd.conf" > /etc/default/hostapd
+
+systemctl enable dnsmasq.service
+systemctl start dnsmasq.service
+systemctl enable hostapd.service
+systemctl start hostapd.service
+
+# Routing
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
+iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
+iptables-save > /etc/iptables.ipv4.nat
+echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-ipv4-nat
+
