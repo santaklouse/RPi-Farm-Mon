@@ -92,7 +92,6 @@ sudo bash
 echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
 
 apt-get install -y dnsmasq hostapd
-dpkg -i 
 systemctl stop dnsmasq
 systemctl stop hostapd
 
@@ -102,8 +101,11 @@ echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.co
 
 # hostapd
 wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
-mv hostapd /usr/local/bin
-ln -sf /usr/local/bin/hostapd /usr/sbin/hostapd
+unzip adafruit_hostapd.zip
+mv hostapd /opt/bin
+chmod 755 /opt/bin/hostapd
+ln -sf /opt/bin/hostapd /usr/sbin/hostapd
+rm adafruit_hostapd.zip
 
 cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
@@ -124,6 +126,8 @@ wme_enabled=1
 EOF
 echo DAEMON_CONF="/etc/hostapd/hostapd.conf" > /etc/default/hostapd
 
+hostapd /etc/hostapd/hostapd.conf
+
 systemctl enable dnsmasq.service
 systemctl start dnsmasq.service
 systemctl enable hostapd.service
@@ -138,3 +142,17 @@ iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
 iptables-save > /etc/iptables.ipv4.nat
 echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-ipv4-nat
 
+reboot
+
+# Homebridge
+
+wget https://nodejs.org/dist/v6.11.4/node-v6.11.4-linux-armv7l.tar.xz
+tar xvJf node-v6.11.4-linux-armv7l.tar.xz
+sudo mv node-v6.11.4-linux-armv7l /opt/node
+rm node-v6.11.4-linux-armv7l.tar.xz
+sudo update-alternatives --install "/usr/bin/node" "node" "/opt/node/bin/node" 1
+sudo update-alternatives --install "/usr/bin/npm" "npm" "/opt/node/bin/npm" 1
+
+
+sudo apt-get install -y libavahi-compat-libdnssd-dev
+sudo /opt/node/bin/npm install -g homebridge
