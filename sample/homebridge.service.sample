@@ -1,0 +1,15 @@
+[Unit]
+Description=Node.js HomeKit Server 
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+User=pi
+EnvironmentFile=/etc/default/homebridge
+ExecStart=/opt/node/lib/node_modules/homebridge/bin/homebridge
+Restart=on-failure
+RestartSec=10
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
