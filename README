@@ -1,16 +1,15 @@
-# Raspberry Pi Initial Setup (For Raspbian Jessie Lite)
+# Raspberry Pi Initial Setup (For Raspberry pi 3 with Raspbian Jessie Lite)
 
-# For only Pi 3
 echo "dtoverlay=pi3-miniuart-bt" >> /Volumes/boot/config.txt
 
 sudo bash
 
-# new hostname is "broccoli"
+### new hostname is "broccoli" ###
 echo "broccoli" > /etc/hostname
 echo "127.0.0.1       localhost" > /etc/hosts
 echo "127.0.1.1       broccoli" >> /etc/hosts
 
-# Enable Wireless LAN
+### Enable Wireless LAN ###
 
 cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
@@ -35,7 +34,7 @@ network={
 }
 EOF
 
-# Disabling IPv6
+### Disabling IPv6 ###
 # https://www.raspberrypi.org/forums/viewtopic.php?t=138899
 
 cat <<EOF > /etc/modprobe.d/ipv6.conf
@@ -63,26 +62,26 @@ apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapf
 apt-get autoremove --purge -y
 apt-get -y upgrade
 
-# Install additional packages
+### Install additional packages ###
 sudo apt-get install -y vim ntpdate git
 
-# Time Setting
+### Time Setting ###
 ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 ntpdate ntp.nict.jp
 crontab -e
 
     55 * * * * ntpdate ntp.nict.jp >/dev/null 2>&1
 
-# Enable required daemon
+### Enable required daemon ###
 systemctl enable ssh
 systemctl enable avahi-daemon
 
-# Update Firmware
+### Update Firmware ###
 rpi-update
 
 reboot
 
-# Wireless Router Setting
+### Wireless Router Setting ###
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 # https://wiki.debian.org/BuildingTutorial#The_packaging_workflow
 # https://github.com/pritambaral/hostapd-rtl871xdrv
@@ -95,11 +94,11 @@ apt-get install -y dnsmasq hostapd
 systemctl stop dnsmasq
 systemctl stop hostapd
 
-# DHCP Server
+### DHCP Server ###
 echo "interface=wlan0" > /etc/dnsmasq.conf
 echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.conf
 
-# hostapd
+### hostapd ###
 wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
 unzip adafruit_hostapd.zip
 mv hostapd /opt/bin
@@ -124,6 +123,7 @@ wpa_group_rekey=86400
 ieee80211n=1
 wme_enabled=1
 EOF
+
 echo DAEMON_CONF="/etc/hostapd/hostapd.conf" > /etc/default/hostapd
 
 hostapd /etc/hostapd/hostapd.conf
@@ -133,7 +133,7 @@ systemctl start dnsmasq.service
 systemctl enable hostapd.service
 systemctl start hostapd.service
 
-# Routing
+### Routing ###
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
