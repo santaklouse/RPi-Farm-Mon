@@ -156,3 +156,20 @@ sudo update-alternatives --install "/usr/bin/npm" "npm" "/opt/node/bin/npm" 1
 
 sudo apt-get install -y libavahi-compat-libdnssd-dev
 sudo /opt/node/bin/npm install -g homebridge
+sudo /opt/node/bin/npm install -g homebridge-cmd
+
+git clone https://github.com/mbuzz15/RPi-Farm-Mon
+mkdir .homebridge
+cp rpi-farm-mon/sample/config.json.sample .homebridge/config.json
+
+/opt/node/lib/node_modules/homebridge/bin/homebridge
+
+sudo touch /etc/default/homebridge
+sudo cp /home/pi/rpi-farm-mon/sample/homebridge.service.sample /etc/systemd/system/homebridge.service
+sudo systemctl daemon-reload
+sudo systemctl start homebridge
+sudo systemctl enable homebridge
+sudo systemctl status homebridge
+
+
+
