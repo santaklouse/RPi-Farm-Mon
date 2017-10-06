@@ -101,8 +101,9 @@ echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.co
 ### hostapd ###
 wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
 unzip adafruit_hostapd.zip
-mv hostapd /opt/bin
-chmod 755 /opt/bin/hostapd
+chmod 755 hostapd
+mkdir /opt/bin
+mv hostapd /opt/bin/hostapd
 ln -sf /opt/bin/hostapd /usr/sbin/hostapd
 rm adafruit_hostapd.zip
 
@@ -163,12 +164,12 @@ sudo /opt/node/bin/npm install -g homebridge-cmd
 
 git clone https://github.com/mbuzz15/RPi-Farm-Mon
 mkdir .homebridge
-cp rpi-farm-mon/sample/config.json.sample .homebridge/config.json
+cp RPi-Farm-Mon/sample/config.json.sample .homebridge/config.json
 
 /opt/node/lib/node_modules/homebridge/bin/homebridge
 
 sudo touch /etc/default/homebridge
-sudo cp /home/pi/rpi-farm-mon/sample/homebridge.service.sample /etc/systemd/system/homebridge.service
+sudo cp /home/pi/RPi-Farm-Mon/sample/homebridge.service.sample /etc/systemd/system/homebridge.service
 sudo systemctl daemon-reload
 sudo systemctl start homebridge
 sudo systemctl enable homebridge
