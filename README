@@ -144,7 +144,11 @@ echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-i
 
 reboot
 
-# Homebridge
+### Install Homebridge ###
+# https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
+# https://timleland.com/setup-homebridge-to-start-on-bootup/
+
+# Get Binary from Official Site https://nodejs.org/en/download/
 
 wget https://nodejs.org/dist/v6.11.4/node-v6.11.4-linux-armv7l.tar.xz
 tar xvJf node-v6.11.4-linux-armv7l.tar.xz
@@ -152,7 +156,6 @@ sudo mv node-v6.11.4-linux-armv7l /opt/node
 rm node-v6.11.4-linux-armv7l.tar.xz
 sudo update-alternatives --install "/usr/bin/node" "node" "/opt/node/bin/node" 1
 sudo update-alternatives --install "/usr/bin/npm" "npm" "/opt/node/bin/npm" 1
-
 
 sudo apt-get install -y libavahi-compat-libdnssd-dev
 sudo /opt/node/bin/npm install -g homebridge
