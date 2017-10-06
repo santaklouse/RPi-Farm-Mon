@@ -206,8 +206,10 @@ i2cdetect -y 1
 #    70: -- -- -- -- -- -- -- --
 
 sudo apt-get install -y python-smbus
+
 python /home/pi/RPi-Farm-Mon/lib/sht31.py 
-    Temperature: 28.02
-    Humidity:    48.78
+#    Temperature: 28.02
+#    Humidity:    48.78
+
 python /home/pi/RPi-Farm-Mon/lib/tsl2561.py 
-    Luminosity:  0.47
+#    Luminosity:  0.47
