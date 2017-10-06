@@ -12,8 +12,6 @@ echo "127.0.1.1       broccoli" >> /etc/hosts
 
 # Enable Wireless LAN
 
-echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
-
 cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
 auto lo
@@ -59,6 +57,7 @@ ifdown wlan1
 ifup wlan1
 
 echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list
+
 apt-get update
 apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed fbset kbd keyboard-configuration libfreetype6:armhf libpng12-0:armhf nano nfs-common ntp rsyslog vim-tiny v4l-utils xauth xdg-user-dirs xkb-data
 apt-get autoremove --purge -y
@@ -85,9 +84,15 @@ reboot
 
 # Wireless Router Setting
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
+# https://wiki.debian.org/BuildingTutorial#The_packaging_workflow
+# https://github.com/pritambaral/hostapd-rtl871xdrv
 
 sudo bash
+
+echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
+
 apt-get install -y dnsmasq hostapd
+dpkg -i 
 systemctl stop dnsmasq
 systemctl stop hostapd
 
@@ -96,10 +101,13 @@ echo "interface=wlan0" > /etc/dnsmasq.conf
 echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.conf
 
 # hostapd
+wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
+mv hostapd /usr/local/bin
+ln -sf /usr/local/bin/hostapd /usr/sbin/hostapd
+
 cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
-driver=nl80211
-#driver=rtl871xdrv
+driver=rtl871xdrv
 ssid=raspberry
 hw_mode=g
 channel=6
@@ -109,8 +117,10 @@ ignore_broadcast_ssid=0
 wpa=2
 wpa_passphrase=raspberry
 wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
+wpa_pairwise=CCMP
+wpa_group_rekey=86400
+ieee80211n=1
+wme_enabled=1
 EOF
 echo DAEMON_CONF="/etc/hostapd/hostapd.conf" > /etc/default/hostapd
 
