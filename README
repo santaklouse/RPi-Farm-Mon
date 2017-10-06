@@ -175,5 +175,39 @@ sudo systemctl start homebridge
 sudo systemctl enable homebridge
 sudo systemctl status homebridge
 
+### Sensor Device ###
+# SHT11(Temperature/Humidity), TSL2561(Luminosity)
 
+sudo bash
+echo i2c-bcm2708 >> /etc/modules
+echo i2c-dev >> /etc/modules
+vi /boot/config.txt
 
+#    :
+#    # Uncomment some or all of these to enable the optional hardware interfaces
+#    dtparam=i2c_arm=on      # < Uncomment
+#    dtparam=i2s=on          # < Uncomment
+#    #dtparam=spi=on
+#    :
+
+reboot
+
+sudo apt-get install -y i2c-tools
+i2cdetect -y 1
+
+#         0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+#    00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    30: -- -- -- -- -- -- -- -- -- 39 -- -- -- -- -- -- 
+#    40: -- -- -- -- -- 45 -- -- -- -- -- -- -- -- -- -- 
+#    50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    70: -- -- -- -- -- -- -- --
+
+sudo apt-get install -y python-smbus
+python /home/pi/RPi-Farm-Mon/lib/sht31.py 
+    Temperature: 28.02
+    Humidity:    48.78
+python /home/pi/RPi-Farm-Mon/lib/tsl2561.py 
+    Luminosity:  0.47
