@@ -218,8 +218,36 @@ python /home/pi/RPi-Farm-Mon/lib/tsl2561.py
 # Control TP-Link Wi-Fi Smart Plug HS100/HS105
 # https://github.com/GadgetReactor/pyHS100
 
+sudo sh -c "echo 'dhcp-host=50:c7:bf:xx:xx:xx,192.168.100.51' >> /etc/dnsmasq.conf"
+sudo sh -c "echo 'dhcp-host=50:c7:bf:zz:zz:zz,192.168.100.52' >> /etc/dnsmasq.conf"
+
+sudo systemctl restart dnsmasq
+
 sudo apt-get install -y python-pip
 sudo pip install pyHS100
-pyhs100 discover
-pyhs100 --ip 192.168.1.18 on
-pyhs100 --ip 192.168.1.18 off
+pyhs100 --ip=192.168.100.51 off
+#  Turning off..
+pyhs100 --ip=192.168.100.51 on
+#  Turning on..
+
+vim .homebridge/config.json
+
+#    :
+#    :
+#    "accessories": [
+#        {
+#            "accessory": "CMD",
+#            "name": "hs105-1",
+#            "on_cmd": "pyhs100 --ip=192.168.100.51 on",
+#            "off_cmd": "pyhs100 --ip=192.168.100.51 off"
+#        },
+#        {
+#            "accessory": "CMD",
+#            "name": "hs105-2",
+#            "on_cmd": "pyhs100 --ip=192.168.100.52 on",
+#            "off_cmd": "pyhs100 --ip=192.168.100.52 off"
+#        }
+#    ]
+#    :
+
+sudo systemctl restart homebridge
