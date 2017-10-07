@@ -320,3 +320,57 @@ vim .homebridge/config.json
 #    :
 
 sudo systemctl restart homebridge
+
+Send Data to AWS
+################
+
+$ sudo apt-get install -y awscli
+$ aws configure
+AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX
+AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Default region name [None]: ap-northeast-1
+Default output format [None]: json
+
+$ sudo apt-get install -y python-pip
+$ sudo pip install boto3
+
+### Send Temperature/Humidity/Luminosity data to AWS CloudWatch ###
+
+$ python /home/pi/rpi-farm-mon/sample/sample2.py
+$ crontab -e
+
+    :
+    :
+    0,5,10,15,20,25,30,35,40,45,50,55 * * * * python /home/pi/rpi-farm-mon/sample/sample2.py >/dev/null 2>&1
+
+### Send Image data to AWS S3 ###
+
+# Creating new bucket
+$ aws s3 mb s3://rpi-farm-mon
+make_bucket: s3://rpi-farm-mon/
+
+$ cat << EOF > policy.json
+{
+    "Version": "2012-10-17",
+    "Id": "PublicRead",
+    "Statement": [
+        {
+            "Sid": "ReadAccess",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::rpi-farm-mon/*"
+        }
+    ]
+}
+EOF
+
+$ aws s3api put-bucket-policy --bucket rpi-farm-mon --policy file://policy.json
+$ rm policy.json
+
+$ sh /home/pi/rpi-farm-mon/sample/sample3.sh
+$ crontab -e
+
+    :
+    :
+    0,30 * * * * sh /home/pi/rpi-farm-mon/sample/sample3.sh >/dev/null 2>&1
