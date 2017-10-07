@@ -5,7 +5,7 @@ IMAGE=/tmp/image.jpg
 DESTINATION="EXAMPLE@EXAMPLE.COM"    # < Change to your mail address.
 
 echo "Date: $DATE" > $MAILBODY
-fswebcam -r 640x480 --jpeg 95 $IMAGE >/dev/null
+fswebcam -r 640x480 --jpeg 95 $IMAGE
 
 mutt -s "$SUBJECT" $DESTINATION -a $IMAGE < $MAILBODY
 
