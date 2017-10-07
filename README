@@ -213,3 +213,13 @@ python /home/pi/RPi-Farm-Mon/lib/sht31.py
 
 python /home/pi/RPi-Farm-Mon/lib/tsl2561.py 
 #    Luminosity:  0.47
+
+### Smart Plug ###
+# Control TP-Link Wi-Fi Smart Plug HS100/HS105
+# https://github.com/GadgetReactor/pyHS100
+
+sudo apt-get install -y python-pip
+sudo pip install pyHS100
+pyhs100 discover
+pyhs100 --ip 192.168.1.18 on
+pyhs100 --ip 192.168.1.18 off
