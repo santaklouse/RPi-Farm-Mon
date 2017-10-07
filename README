@@ -235,7 +235,7 @@ vim .homebridge/config.json
 #        :
 #        {
 #            "accessory": "CMD",
-#            "name": "send_sensor_data",
+#            "name": "Send Sensor Data",
 #            "on_cmd": "sh /home/pi/send_sensor_data.sh",
 #            "off_cmd": "sh /home/pi/send_sensor_data.sh"
 #        }
@@ -247,6 +247,7 @@ sudo systemctl restart homebridge
 ### USB WebCam (Picture) ###
 
 sudo apt-get install -y fswebcam
+
 cp RPi-Farm-Mon/sample/sample2.sh send_picture.sh
 sh /home/pi/send_picture.sh
 
@@ -257,9 +258,26 @@ vim .homebridge/config.json
 #        :
 #        {
 #            "accessory": "CMD",
-#            "name": "hs105-2",
-#            "on_cmd": "pyhs100 --ip=192.168.100.52 on",
-#            "off_cmd": "pyhs100 --ip=192.168.100.52 off"
+#            "name": "Send Picture",
+#            "on_cmd": "sh /home/pi/send_picture.sh",
+#            "off_cmd": "sh /home/pi/send_picture.sh"
+#        }
+#    ]
+#    :
+
+cp RPi-Farm-Mon/sample/sample3.sh send_data_and_picture.sh
+sh /home/pi/send_data_and_picture.sh
+
+vim .homebridge/config.json
+
+#    :
+#    "accessories": [
+#        :
+#        {
+#            "accessory": "CMD",
+#            "name": "Send Environment Data",
+#            "on_cmd": "sh /home/pi/send_data_and_picture.sh",
+#            "off_cmd": "sh /home/pi/send_data_and_picture.sh"
 #        }
 #    ]
 #    :
