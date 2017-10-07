@@ -261,7 +261,7 @@ vim .homebridge/config.json
 #            "name": "Send Picture",
 #            "on_cmd": "sh /home/pi/send_picture.sh",
 #            "off_cmd": "sh /home/pi/send_picture.sh"
-#        }
+#        },
 #    ]
 #    :
 
@@ -278,7 +278,7 @@ vim .homebridge/config.json
 #            "name": "Send Environment Data",
 #            "on_cmd": "sh /home/pi/send_data_and_picture.sh",
 #            "off_cmd": "sh /home/pi/send_data_and_picture.sh"
-#        }
+#        },
 #    ]
 #    :
 
