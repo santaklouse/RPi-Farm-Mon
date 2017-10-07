@@ -109,7 +109,8 @@ rm adafruit_hostapd.zip
 
 cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
-driver=rtl871xdrv
+driver=nl80211
+#driver=rtl871xdrv
 ssid=raspberry
 hw_mode=g
 channel=6
