@@ -218,28 +218,51 @@ i2cdetect -y 1
 
 sudo apt-get install -y python-smbus
 
-python /home/pi/RPi-Farm-Mon/lib/sht31.py 
+python RPi-Farm-Mon/lib/sht31.py 
 #    Temperature: 28.02
 #    Humidity:    48.78
 
-python /home/pi/RPi-Farm-Mon/lib/tsl2561.py 
+python RPi-Farm-Mon/lib/tsl2561.py 
 #    Luminosity:  0.47
+
+cp RPi-Farm-Mon/sample/sample1.sh send_sensor_data.sh
+sh send_sensor_data.sh
 
 vim .homebridge/config.json
 
 #    :
-#    :
 #    "accessories": [
+#        :
 #        {
 #            "accessory": "CMD",
-#            "name": "hs105-1",
-#            "on_cmd": "pyhs100 --ip=192.168.100.51 on",
-#            "off_cmd": "pyhs100 --ip=192.168.100.51 off"
+#            "name": "send_sensor_data",
+#            "on_cmd": "sh /home/pi/send_sensor_data.sh",
+#            "off_cmd": "sh /home/pi/send_sensor_data.sh"
 #        }
 #    ]
 #    :
 
 sudo systemctl restart homebridge
+
+### USB WebCam (Picture) ###
+
+sudo apt-get install -y fswebcam
+cp RPi-Farm-Mon/sample/sample2.sh send_picture.sh
+sh /home/pi/send_picture.sh
+
+vim .homebridge/config.json
+
+#    :
+#    "accessories": [
+#        :
+#        {
+#            "accessory": "CMD",
+#            "name": "hs105-2",
+#            "on_cmd": "pyhs100 --ip=192.168.100.52 on",
+#            "off_cmd": "pyhs100 --ip=192.168.100.52 off"
+#        }
+#    ]
+#    :
 
 ### Smart Plug ###
 # Control TP-Link Wi-Fi Smart Plug HS100/HS105
@@ -260,8 +283,8 @@ pyhs100 --ip=192.168.100.51 on
 vim .homebridge/config.json
 
 #    :
-#    :
 #    "accessories": [
+#        :
 #        {
 #            "accessory": "CMD",
 #            "name": "hs105-1",
