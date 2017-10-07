@@ -175,6 +175,17 @@ sudo systemctl start homebridge
 sudo systemctl enable homebridge
 sudo systemctl status homebridge
 
+### E-Mail ###
+
+sudo apt-get install -y mutt ssmtp
+sudo sh -c 'cat <<EOF > /etc/ssmtp/ssmtp.conf
+mailhub=smtp.gmail.com:587
+AuthUser=xxxxxxxx@gmail.com
+AuthPass=xxxxxxxx
+UseSTARTTLS=YES
+AuthLogin=YES
+EOF'
+
 ### Sensor Device ###
 # SHT11(Temperature/Humidity), TSL2561(Luminosity)
 
@@ -213,6 +224,22 @@ python /home/pi/RPi-Farm-Mon/lib/sht31.py
 
 python /home/pi/RPi-Farm-Mon/lib/tsl2561.py 
 #    Luminosity:  0.47
+
+vim .homebridge/config.json
+
+#    :
+#    :
+#    "accessories": [
+#        {
+#            "accessory": "CMD",
+#            "name": "hs105-1",
+#            "on_cmd": "pyhs100 --ip=192.168.100.51 on",
+#            "off_cmd": "pyhs100 --ip=192.168.100.51 off"
+#        }
+#    ]
+#    :
+
+sudo systemctl restart homebridge
 
 ### Smart Plug ###
 # Control TP-Link Wi-Fi Smart Plug HS100/HS105
