@@ -5,7 +5,7 @@ import tsl2561
 import boto3
 
 NAMESPACE = 'RPi-Farm-Mon'
-DEVICE_ID = 'Broccoli'
+DEVICE_ID = 'raspberrypi'
 
 # SHT31
 SHT31_ADDRESS = 0x45
