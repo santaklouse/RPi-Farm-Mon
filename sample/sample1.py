@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/pi/rpi-farm-mon/sensor')
+sys.path.append('/home/pi/RPi-Farm-Mon/lib')
 import sht31
 import tsl2561
 import boto3
