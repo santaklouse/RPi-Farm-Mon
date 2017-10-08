@@ -104,14 +104,14 @@ unzip adafruit_hostapd.zip
 chmod 755 hostapd
 mkdir /opt/bin
 mv hostapd /opt/bin/hostapd.rtl871xdrv
-cp /usr/sbin/hostapd .
-ln -sf /opt/bin/hostapd /usr/sbin/hostapd
+cp /usr/sbin/hostapd /opt/bin
+ln -sf /opt/bin/hostapd.rtl871xdrv /usr/sbin/hostapd
 rm adafruit_hostapd.zip
 
 cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
-driver=nl80211
-#driver=rtl871xdrv
+#driver=nl80211
+driver=rtl871xdrv
 ssid=raspberry
 hw_mode=g
 channel=6
@@ -146,6 +146,106 @@ iptables-save > /etc/iptables.ipv4.nat
 echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-ipv4-nat
 
 reboot
+
+### Sensor Device ###
+# SHT11(Temperature/Humidity), TSL2561(Luminosity)
+
+sudo bash
+echo i2c-bcm2708 >> /etc/modules
+echo i2c-dev >> /etc/modules
+vi /boot/config.txt
+
+#    :
+#    # Uncomment some or all of these to enable the optional hardware interfaces
+#    dtparam=i2c_arm=on      # < Uncomment
+#    dtparam=i2s=on          # < Uncomment
+#    #dtparam=spi=on
+#    :
+
+reboot
+
+git clone https://github.com/mbuzz15/RPi-Farm-Mon/
+
+sudo apt-get install -y i2c-tools
+i2cdetect -y 1
+
+#         0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+#    00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    30: -- -- -- -- -- -- -- -- -- 39 -- -- -- -- -- -- 
+#    40: -- -- -- -- -- 45 -- -- -- -- -- -- -- -- -- -- 
+#    50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+#    70: -- -- -- -- -- -- -- --
+
+sudo apt-get install -y python-smbus
+
+python RPi-Farm-Mon/lib/sht31.py 
+#    Temperature: 28.02
+#    Humidity:    48.78
+
+python RPi-Farm-Mon/lib/tsl2561.py 
+#    Luminosity:  0.47
+
+Send Data to AWS
+################
+
+$ sudo apt-get install -y awscli
+$ aws configure
+AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX
+AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Default region name [None]: ap-northeast-1
+Default output format [None]: json
+
+$ sudo apt-get install -y python-pip
+$ sudo pip install boto3
+
+### Send Temperature/Humidity/Luminosity data to AWS CloudWatch ###
+
+$ python /home/pi/rpi-farm-mon/sample/sample2.py
+$ crontab -e
+
+    :
+    :
+    0,5,10,15,20,25,30,35,40,45,50,55 * * * * python /home/pi/rpi-farm-mon/sample/sample2.py >/dev/null 2>&1
+
+### Send Image data to AWS S3 ###
+
+# Creating new bucket
+$ aws s3 mb s3://rpi-farm-mon
+make_bucket: s3://rpi-farm-mon/
+
+$ cat << EOF > policy.json
+{
+    "Version": "2012-10-17",
+    "Id": "PublicRead",
+    "Statement": [
+        {
+            "Sid": "ReadAccess",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::rpi-farm-mon/*"
+        }
+    ]
+}
+EOF
+
+$ aws s3api put-bucket-policy --bucket rpi-farm-mon --policy file://policy.json
+$ rm policy.json
+
+$ sh /home/pi/rpi-farm-mon/sample/sample3.sh
+$ crontab -e
+
+    :
+    :
+    0,30 * * * * sh /home/pi/rpi-farm-mon/sample/sample3.sh >/dev/null 2>&1
+
+
+
+
+
 
 ### Install Homebridge ###
 # https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
@@ -188,44 +288,7 @@ UseSTARTTLS=YES
 AuthLogin=YES
 EOF'
 
-### Sensor Device ###
-# SHT11(Temperature/Humidity), TSL2561(Luminosity)
 
-sudo bash
-echo i2c-bcm2708 >> /etc/modules
-echo i2c-dev >> /etc/modules
-vi /boot/config.txt
-
-#    :
-#    # Uncomment some or all of these to enable the optional hardware interfaces
-#    dtparam=i2c_arm=on      # < Uncomment
-#    dtparam=i2s=on          # < Uncomment
-#    #dtparam=spi=on
-#    :
-
-reboot
-
-sudo apt-get install -y i2c-tools
-i2cdetect -y 1
-
-#         0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-#    00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
-#    10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-#    20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-#    30: -- -- -- -- -- -- -- -- -- 39 -- -- -- -- -- -- 
-#    40: -- -- -- -- -- 45 -- -- -- -- -- -- -- -- -- -- 
-#    50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-#    60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-#    70: -- -- -- -- -- -- -- --
-
-sudo apt-get install -y python-smbus
-
-python RPi-Farm-Mon/lib/sht31.py 
-#    Temperature: 28.02
-#    Humidity:    48.78
-
-python RPi-Farm-Mon/lib/tsl2561.py 
-#    Luminosity:  0.47
 
 cp RPi-Farm-Mon/sample/sample1.sh send_sensor_data.sh
 sh send_sensor_data.sh
