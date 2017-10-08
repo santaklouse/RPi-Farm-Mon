@@ -103,7 +103,8 @@ wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
 unzip adafruit_hostapd.zip
 chmod 755 hostapd
 mkdir /opt/bin
-mv hostapd /opt/bin/hostapd
+mv hostapd /opt/bin/hostapd.rtl871xdrv
+cp /usr/sbin/hostapd .
 ln -sf /opt/bin/hostapd /usr/sbin/hostapd
 rm adafruit_hostapd.zip
 
