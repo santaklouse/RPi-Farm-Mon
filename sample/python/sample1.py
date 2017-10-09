@@ -1,9 +1,9 @@
+import os
+import boto3
 import sys
 sys.path.append('/home/pi/RPi-Farm-Mon/lib')
-import os
 import sht31
 import tsl2561
-import boto3
 
 NAMESPACE = 'RPi-Farm-Mon'
 DEVICE_ID = '%s' % os.uname()[1]
