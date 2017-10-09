@@ -106,6 +106,8 @@ reboot
 ### CORRECT DATA ###
 ####################
 
+git clone https://github.com/mbuzz15/RPi-Farm-Mon/
+
 ### I2C SENSOR DEVICE SETUP ###
 # SHT11(Temperature/Humidity)
 # TSL2561(Luminosity)
@@ -132,13 +134,11 @@ i2cdetect -y 1
 #    60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 #    70: -- -- -- -- -- -- -- --
 
-git clone https://github.com/mbuzz15/RPi-Farm-Mon/
-
-python RPi-I2C-Sensor-Devices/lib/sht31.py
+python RPi-Farm-Mon/lib/sht31.py
 #    Temperature: 28.02
 #    Humidity:    48.78
 
-python RPi-I2C-Sensor-Devices/lib/tsl2561.py 
+python RPi-Farm-Mon/lib/tsl2561.py 
 #    Luminosity:  0.47
 
 ### SEND DATA TO AWS CLOUDWATCH ###
@@ -154,7 +154,7 @@ aws configure
 #    Default region name [None]: ap-northeast-1
 #    Default output format [None]: json
 
-cp RPi-I2C-Sensor-Devices/sample/sample1.py send_data.py
+cp RPi-Farm-Mon/sample/sample1.py send_data.py
 python send_data.py
 
 $ crontab -e
