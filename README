@@ -149,19 +149,19 @@ sudo pip install boto3
 
 aws configure
 
-# AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX
-# AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-# Default region name [None]: ap-northeast-1
-# Default output format [None]: json
+#    AWS Access Key ID [None]: XXXXXXXXXXXXXXXXXXXX
+#    AWS Secret Access Key [None]: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#    Default region name [None]: ap-northeast-1
+#    Default output format [None]: json
 
 cp RPi-I2C-Sensor-Devices/sample/sample1.py send_data.py
 python send_data.py
 
 $ crontab -e
 
-    :
-    :
-    0,5,10,15,20,25,30,35,40,45,50,55 * * * * python /home/pi/send_data.py >/dev/null 2>&1
+#    :
+#    :
+#    */5 * * * * python /home/pi/send_data.py >/dev/null 2>&1
 
 ### Send Image data to AWS S3 ###
 
