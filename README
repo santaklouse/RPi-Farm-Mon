@@ -163,7 +163,6 @@ $ crontab -e
 #    :
 #    */5 * * * * python /home/pi/send_data.py >/dev/null 2>&1
 
-
 ### USB WEBCAM SETUP ###
 # USB Webcam - iBUFFALO BSWHD06MBK
 
@@ -201,6 +200,10 @@ $ crontab -e
     :
     * */6 * * * python /home/pi/upload_image.py >/dev/null 2>&1
 
+
+######################
+### CONTROL THINGS ###
+######################
 
 ### WIRELESS ROUTER SETTING ###
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
@@ -269,9 +272,21 @@ echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-i
 
 reboot
 
+### SMART PLUG ###
+# Control TP-Link Wi-Fi Smart Plug HS100/HS105
+# https://github.com/GadgetReactor/pyHS100
 
+sudo sh -c "echo 'dhcp-host=50:c7:bf:xx:xx:xx,192.168.100.51' >> /etc/dnsmasq.conf"
+sudo sh -c "echo 'dhcp-host=50:c7:bf:zz:zz:zz,192.168.100.52' >> /etc/dnsmasq.conf"
 
+sudo systemctl restart dnsmasq
 
+sudo apt-get install -y python-pip
+sudo pip install pyHS100
+pyhs100 --ip=192.168.100.51 off
+#  Turning off..
+pyhs100 --ip=192.168.100.51 on
+#  Turning on..
 
 ### Install Homebridge ###
 # https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
@@ -364,21 +379,6 @@ vim .homebridge/config.json
 #    ]
 #    :
 
-### Smart Plug ###
-# Control TP-Link Wi-Fi Smart Plug HS100/HS105
-# https://github.com/GadgetReactor/pyHS100
-
-sudo sh -c "echo 'dhcp-host=50:c7:bf:xx:xx:xx,192.168.100.51' >> /etc/dnsmasq.conf"
-sudo sh -c "echo 'dhcp-host=50:c7:bf:zz:zz:zz,192.168.100.52' >> /etc/dnsmasq.conf"
-
-sudo systemctl restart dnsmasq
-
-sudo apt-get install -y python-pip
-sudo pip install pyHS100
-pyhs100 --ip=192.168.100.51 off
-#  Turning off..
-pyhs100 --ip=192.168.100.51 on
-#  Turning on..
 
 vim .homebridge/config.json
 
@@ -401,4 +401,3 @@ vim .homebridge/config.json
 #    :
 
 sudo systemctl restart homebridge
-
