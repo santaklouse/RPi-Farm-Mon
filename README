@@ -201,6 +201,7 @@ $ crontab -e
     :
     * */6 * * * python /home/pi/upload_image.py >/dev/null 2>&1
 
+
 ### WIRELESS ROUTER SETTING ###
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 # https://wiki.debian.org/BuildingTutorial#The_packaging_workflow
