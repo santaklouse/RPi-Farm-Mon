@@ -273,11 +273,6 @@ reboot
 
 
 
-
-
-
-
-
 ### Install Homebridge ###
 # https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
 # https://timleland.com/setup-homebridge-to-start-on-bootup/
@@ -319,8 +314,6 @@ UseSTARTTLS=YES
 AuthLogin=YES
 EOF'
 
-
-
 cp RPi-Farm-Mon/sample/sample1.sh send_sensor_data.sh
 sh send_sensor_data.sh
 
@@ -339,13 +332,6 @@ vim .homebridge/config.json
 #    :
 
 sudo systemctl restart homebridge
-
-### USB WebCam (Picture) ###
-
-sudo apt-get install -y fswebcam
-
-cp RPi-Farm-Mon/sample/sample2.sh send_picture.sh
-sh /home/pi/send_picture.sh
 
 vim .homebridge/config.json
 
