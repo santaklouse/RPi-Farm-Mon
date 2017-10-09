@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/pi/RPi-I2C-Sensor-Devices/lib')
+sys.path.append('/home/pi/RPi-Farm-Mon/lib')
 import os
 import sht31
 import tsl2561
