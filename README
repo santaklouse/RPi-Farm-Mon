@@ -168,6 +168,7 @@ $ crontab -e
 # USB Webcam - iBUFFALO BSWHD06MBK
 
 sudo apt-get install -y fswebcam
+fswabcam -r 640x480 --jpeg 95 image.jpg
 
 # Creating new bucket
 aws s3 mb s3://monitoring-u7rrxtw2
