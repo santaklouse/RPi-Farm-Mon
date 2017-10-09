@@ -1,15 +1,40 @@
-# Raspberry Pi Initial Setup (For Raspberry pi 3 with Raspbian Jessie Lite)
+### INITIAL SETUP (For Raspberry pi 3 with Raspbian Jessie Lite) ###
 
-echo "dtoverlay=pi3-miniuart-bt" >> /Volumes/boot/config.txt
+# ENABLE UART
+#     https://www.raspberrypi.org/documentation/configuration/uart.md
+
+echo "enable_uart=1" > /Volumes/boot/config.txt
+
+# GPU MEMORY ALLOCATION
+#     https://www.raspberrypi.org/documentation/configuration/config-txt/memory.md
+
+echo "gpu_mem=16" > /Volumes/boot/config.txt
+
+### OS SETUP ####
 
 sudo bash
 
-### new hostname is "broccoli" ###
-echo "broccoli" > /etc/hostname
-echo "127.0.0.1       localhost" > /etc/hosts
-echo "127.0.1.1       broccoli" >> /etc/hosts
+# DISABLE IPv&
+#     https://www.raspberrypi.org/forums/viewtopic.php?t=138899
 
-### Enable Wireless LAN ###
+cat <<EOF > /etc/modprobe.d/ipv6.conf
+alias net-pf-10 off
+alias ipv6 off
+options ipv6 disable_ipv6=1
+blacklist ipv6
+EOF
+
+cat <<EOF >> /etc/sysctl.conf
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+net.ipv6.conf.eth0.disable_ipv6 = 1
+net.ipv6.conf.[interface].disable_ipv6 = 1
+EOF
+
+# NETWORK CONFIGURATION
+#     wlan0 = Internal WiFi Adaptor
+#     wlan1 = USB WiFi Dongle (Using TP-Link TL-WN725N)
 
 cat <<EOF > /etc/network/interfaces 
 source-directory /etc/network/interfaces.d
@@ -34,54 +59,45 @@ network={
 }
 EOF
 
-### Disabling IPv6 ###
-# https://www.raspberrypi.org/forums/viewtopic.php?t=138899
+# ENABLE REQUIRED SERVICE
+systemctl enable ssh
+systemctl enable avahi-daemon
 
-cat <<EOF > /etc/modprobe.d/ipv6.conf
-alias net-pf-10 off
-alias ipv6 off
-options ipv6 disable_ipv6=1
-blacklist ipv6
-EOF
+reboot
 
-cat <<EOF >> /etc/sysctl.conf
-net.ipv6.conf.all.disable_ipv6 = 1
-net.ipv6.conf.default.disable_ipv6 = 1
-net.ipv6.conf.lo.disable_ipv6 = 1
-net.ipv6.conf.eth0.disable_ipv6 = 1
-net.ipv6.conf.[interface].disable_ipv6 = 1
-EOF
+# REMOVE UNNECESSARY PACKAGES AND UPDATE OS
+ssh pi@raspberrypi.local
 
-ifdown wlan1
-ifup wlan1
+sudo bash
 
 echo 'deb http://ftp.jaist.ac.jp/raspbian/ jessie main contrib non-free rpi' > /etc/apt/sources.list
-
 apt-get update
 apt-get autoremove --purge -y alsa-utils bluez cifs-utils dosfstools dphys-swapfile ed fbset kbd keyboard-configuration nano nfs-common ntp rsyslog vim-tiny v4l-utils xauth xdg-user-dirs xkb-data
 apt-get autoremove --purge -y
 apt-get -y upgrade
 
-### Install additional packages ###
-sudo apt-get install -y vim ntpdate git
+# INSTALL REQUIRED PACKAGES
+apt-get install -y vim ntpdate git
+apt-get clean
 
-### Time Setting ###
+# TIME CONFIGURATION
 ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 ntpdate ntp.nict.jp
 crontab -e
 
     55 * * * * ntpdate ntp.nict.jp >/dev/null 2>&1
 
-### Enable required daemon ###
-systemctl enable ssh
-systemctl enable avahi-daemon
-
-### Update Firmware ###
+# UPDATE FIRMWARE
 rpi-update
+
+# HOSTNAME CONFIGURATION
+echo "broccoli" > /etc/hostname
+echo "127.0.0.1       localhost" > /etc/hosts
+echo "127.0.1.1       broccoli" >> /etc/hosts
 
 reboot
 
-### Wireless Router Setting ###
+### WIRELESS ROUTER SETTING ###
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md
 # https://wiki.debian.org/BuildingTutorial#The_packaging_workflow
 # https://github.com/pritambaral/hostapd-rtl871xdrv
@@ -90,15 +106,16 @@ sudo bash
 
 echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf
 
+# INSTALL DNSMASQ AND HOSTAPD
 apt-get install -y dnsmasq hostapd
 systemctl stop dnsmasq
 systemctl stop hostapd
 
-### DHCP Server ###
+# DHCP SERVER CONFIGURATION
 echo "interface=wlan0" > /etc/dnsmasq.conf
 echo "dhcp-range=192.168.100.20,192.168.100.50,255.255.255.0" >> /etc/dnsmasq.conf
 
-### hostapd ###
+# HOSTAPD CONFIGURATION
 wget http://www.adafruit.com/downloads/adafruit_hostapd.zip
 unzip adafruit_hostapd.zip
 chmod 755 hostapd
@@ -112,7 +129,7 @@ cat <<EOF > /etc/hostapd/hostapd.conf
 interface=wlan0
 #driver=nl80211
 driver=rtl871xdrv
-ssid=raspberry
+ssid=${HOSTNAME}
 hw_mode=g
 channel=6
 macaddr_acl=0
@@ -136,7 +153,7 @@ systemctl start dnsmasq.service
 systemctl enable hostapd.service
 systemctl start hostapd.service
 
-### Routing ###
+# ROUTING CONFIGURATION
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
@@ -147,8 +164,9 @@ echo 'iptables-restore < /etc/iptables.ipv4.nat' > /lib/dhcpcd/dhcpcd-hooks/70-i
 
 reboot
 
-### Sensor Device ###
-# SHT11(Temperature/Humidity), TSL2561(Luminosity)
+### I2C SENSOR DEVICE SETUP ###
+# SHT11(Temperature/Humidity)
+# TSL2561(Luminosity)
 
 sudo bash
 echo i2c-bcm2708 >> /etc/modules
