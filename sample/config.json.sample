@@ -1,6 +1,6 @@
 {
     "bridge": {
-        "name": "Homebridge",
+        "name": "RPi-Farm-Mon",
         "username": "AA:BB:CC:11:22:33",
         "port": 51826,
         "pin": "031-45-154",
