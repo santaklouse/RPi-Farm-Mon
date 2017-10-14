@@ -290,17 +290,6 @@ pyhs100 --ip=192.168.100.51 off
 pyhs100 --ip=192.168.100.51 on
 #  Turning on..
 
-
-
-
-
-
-
-
-
-
-
-
 ### Install Homebridge ###
 # https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
 # https://timleland.com/setup-homebridge-to-start-on-bootup/
@@ -309,20 +298,19 @@ pyhs100 --ip=192.168.100.51 on
 
 wget https://nodejs.org/dist/v6.11.4/node-v6.11.4-linux-armv7l.tar.xz
 tar xvJf node-v6.11.4-linux-armv7l.tar.xz
-sudo mv node-v6.11.4-linux-armv7l /opt/node
+sudo mv node-v6.11.4-linux-armv7l /usr/local/src/node
 rm node-v6.11.4-linux-armv7l.tar.xz
-sudo update-alternatives --install "/usr/bin/node" "node" "/opt/node/bin/node" 1
-sudo update-alternatives --install "/usr/bin/npm" "npm" "/opt/node/bin/npm" 1
+sudo update-alternatives --install "/usr/bin/node" "node" "/usr/local/src/node/bin/node" 1
+sudo update-alternatives --install "/usr/bin/npm" "npm" "/usr/local/src/node/bin/npm" 1
 
 sudo apt-get install -y libavahi-compat-libdnssd-dev
-sudo /opt/node/bin/npm install -g homebridge
-sudo /opt/node/bin/npm install -g homebridge-cmd
+sudo npm install -g homebridge
+sudo npm install -g homebridge-cmd
 
-git clone https://github.com/mbuzz15/RPi-Farm-Mon
 mkdir .homebridge
 cp RPi-Farm-Mon/sample/config.json.sample .homebridge/config.json
 
-/opt/node/lib/node_modules/homebridge/bin/homebridge
+/usr/local/src/node/lib/node_modules/homebridge/bin/homebridge
 
 sudo touch /etc/default/homebridge
 sudo cp /home/pi/RPi-Farm-Mon/sample/homebridge.service.sample /etc/systemd/system/homebridge.service
