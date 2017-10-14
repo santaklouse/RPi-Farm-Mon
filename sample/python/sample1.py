@@ -6,7 +6,7 @@ import sht31
 import tsl2561
 
 NAMESPACE = 'RPi-Farm-Mon'
-DEVICE_ID = '%s' % os.uname()[1]
+DEVICE_ID = 'raspberrypi'
 
 # SHT31
 SHT31_ADDRESS = 0x45
