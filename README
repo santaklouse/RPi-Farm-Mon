@@ -172,8 +172,8 @@ fswebcam -d /dev/video0 -r 1280x960 --jpeg 95 image.jpg
 rm image.jpg
 
 # CREATE NEW BUCKET
-aws s3 mb s3://rpi-farm-mon-u7rrxtw2
-#    make_bucket: s3://monitor-u7rxtw2az
+aws s3 mb s3://example_bucket_name
+#    make_bucket: s3://example_bucket_name
 
 # APPLY POLICY
 
@@ -185,7 +185,7 @@ aws s3 mb s3://rpi-farm-mon-u7rrxtw2
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::monitor-u7rxtw2az/*"
+            "Resource": "arn:aws:s3:::example_bucket_name/*"
         }
     ]
 }
@@ -288,6 +288,17 @@ pyhs100 --ip=192.168.100.51 off
 #  Turning off..
 pyhs100 --ip=192.168.100.51 on
 #  Turning on..
+
+
+
+
+
+
+
+
+
+
+
 
 ### Install Homebridge ###
 # https://gist.github.com/johannrichard/0ad0de1feb6adb9eb61a/
