@@ -168,7 +168,7 @@ $ crontab -e
 # USB Webcam - iBUFFALO BSWHD06MBK
 
 sudo apt-get install -y fswebcam
-fswebcam -r 640x480 --jpeg 95 image.jpg
+fswebcam -d /dev/video0 -r 640x480 --jpeg 95 image.jpg
 rm image.jpg
 
 # CREATE NEW BUCKET
