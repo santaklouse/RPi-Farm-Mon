@@ -306,11 +306,13 @@ sudo update-alternatives --install "/usr/bin/npm" "npm" "/usr/local/src/node/bin
 sudo apt-get install -y libavahi-compat-libdnssd-dev
 sudo npm install -g homebridge
 sudo npm install -g homebridge-cmd
+sudo update-alternatives --install "/usr/bin/homebridge" "homebridge" "/usr/local/src/node/lib/node_modules/homebridge/bin/homebridge
+" 1
 
 mkdir .homebridge
 cp RPi-Farm-Mon/sample/config.json.sample .homebridge/config.json
 
-/usr/local/src/node/lib/node_modules/homebridge/bin/homebridge
+homebridge
 
 sudo touch /etc/default/homebridge
 sudo cp /home/pi/RPi-Farm-Mon/sample/homebridge.service.sample /etc/systemd/system/homebridge.service
