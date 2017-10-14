@@ -19,6 +19,6 @@
             "name": "データ送信",
             "on_cmd": "echo 'on' >/dev/null",
             "off_cmd": "echo 'off' >/dev/null"
-        },
+        }
     ]
 }
