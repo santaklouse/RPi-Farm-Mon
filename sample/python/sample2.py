@@ -3,7 +3,7 @@ import time
 import datetime
 import boto3
 
-bucket_name = 'monitor-u7wdtw9b'
+bucket_name = 'example_bucket_name'
 folder_name = 'raspberrypi'
 webcam_device = '/dev/video0'
 smart_plug_ip_address = '192.168.100.51'
