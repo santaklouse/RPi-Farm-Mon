@@ -155,7 +155,7 @@ aws configure
 #    Default region name [None]: ap-northeast-1
 #    Default output format [None]: json
 
-cp RPi-Farm-Mon/sample/sample1.py send_data.py
+cp RPi-Farm-Mon/sample/python/sample1.py send_data.py
 python send_data.py
 
 $ crontab -e
@@ -172,25 +172,26 @@ fswebcam -d /dev/video0 -r 1280x960 --jpeg 95 image.jpg
 rm image.jpg
 
 # CREATE NEW BUCKET
-aws s3 mb s3://monitoring-u7rrxtw2
+aws s3 mb s3://rpi-farm-mon-u7rrxtw2
 #    make_bucket: s3://monitor-u7rxtw2az
 
-# TAKE A IMAGE AND UPLOAD IMAGE TO AWS S3
-# http://boto3.readthedocs.io/en/latest/guide/s3-example-creating-buckets.html
+# APPLY POLICY
 
-cat <<EOF > policy.json 
 {
+    "Version": "2012-10-17",
     "Statement": [
         {
-            "Principal": "*",
+            "Sid": "AddPerm",
             "Effect": "Allow",
-            "Action": ["s3:GetObject"],
-            "Resource": "arn:aws:s3:::monitor-u7rrxtw2/*"
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::monitor-u7rxtw2az/*"
         }
     ]
 }
-EOF
-aws s3api put-bucket-policy --region ap-northeast-1 --bucket monitor-u7rrxtw2 --policy file://policy.json
+
+# TAKE A IMAGE AND UPLOAD IMAGE TO AWS S3
+# http://boto3.readthedocs.io/en/latest/guide/s3-example-creating-buckets.html
 
 cp RPi-Farm-Mon/sample/python/sample2.py upload_image.py
 python upload_image.py
