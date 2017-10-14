@@ -16,6 +16,7 @@ SHT31_CHANNEL = 1
 TSL2561_ADDRESS = 0x39
 TSL2561_CHANNEL = 1
 
+
 def main():
     sensor_data = {
         'temperature': None,
@@ -26,13 +27,13 @@ def main():
     ### SHT31: Temperature and Humidity Sensor ###
     sht31_instance = sht31.SHT31(SHT31_ADDRESS, SHT31_CHANNEL)
     sht31_result = sht31_instance.read()
-    sensor_data['temperature'] = round(sht31_result[0],2)
-    sensor_data['humidity'] = round(sht31_result[1],2)
+    sensor_data['temperature'] = round(sht31_result[0], 2)
+    sensor_data['humidity'] = round(sht31_result[1], 2)
 
     ### TSL2561: Luminosity Sensor ###
     tsl2561_instance = tsl2561.TSL2561(TSL2561_ADDRESS, TSL2561_CHANNEL)
     tsl2561_result = tsl2561_instance.read()
-    sensor_data['luminosity'] = round(tsl2561_result[0],1) 
+    sensor_data['luminosity'] = round(tsl2561_result[0], 1)
 
     client = boto3.client('cloudwatch')
     for i in sensor_data.keys():
@@ -50,7 +51,7 @@ def main():
                 ]
             }
         ]
-        client.put_metric_data( Namespace = NAMESPACE, MetricData = metric_data )
+        client.put_metric_data(Namespace=NAMESPACE, MetricData=metric_data)
 
 if __name__ == '__main__':
     main()
