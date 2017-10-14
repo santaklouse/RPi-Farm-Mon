@@ -1,18 +1,19 @@
 import smbus
 import time
 
+
 class TSL2561:
     def __init__(self, address, channel):
-        self.address    = address
-        self.channel    = channel
-        self.bus        = smbus.SMBus(self.channel)
+        self.address = address
+        self.channel = channel
+        self.bus = smbus.SMBus(self.channel)
         self.bus.write_i2c_block_data(self.address, 0x80, [0x03])
         time.sleep(0.5)
 
     def read(self):
-        vlrd_data = self.bus.read_i2c_block_data(self.address, 0xAC ,2)
+        vlrd_data = self.bus.read_i2c_block_data(self.address, 0xAC, 2)
         VLRD = vlrd_data[1] << 8 | vlrd_data[0]
-        irrd_data = self.bus.read_i2c_block_data(self.address, 0xAE ,2)
+        irrd_data = self.bus.read_i2c_block_data(self.address, 0xAE, 2)
         IRRD = irrd_data[1] << 8 | irrd_data[0]
 
         if (float(VLRD) == 0):
@@ -34,6 +35,6 @@ class TSL2561:
         return (lux, None)
 
 if __name__ == '__main__':
-    sensor  = TSL2561(0x39,1)
+    sensor = TSL2561(0x39, 1)
     data = sensor.read()
-    print('Luminosity:  %s' % round(data[0],2))
+    print('Luminosity:  %s' % round(data[0], 2))
