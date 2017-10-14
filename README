@@ -176,6 +176,7 @@ aws s3 mb s3://example_bucket_name
 #    make_bucket: s3://example_bucket_name
 
 # APPLY POLICY
+# http://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-2
 
 {
     "Version": "2012-10-17",
