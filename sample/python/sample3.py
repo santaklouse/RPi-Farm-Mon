@@ -12,7 +12,7 @@ sys.path.append('/home/pi/RPi-Farm-Mon/lib')
 import sht31
 import tsl2561
 
-MAIL_FROM = 'example@gmail.com'
+MAIL_FROM = 'exapmle@gmail.com'
 PASSWORD = 'example'
 SUBJECT = 'Environment Status'
 DEVICE = '/dev/video0'
@@ -57,17 +57,17 @@ def create_message(mail_to, subject, device, smart_plug_ip_address):
                % smart_plug_ip_address)
     os.system(command)
 
-    attachment = MIMEBase("image","jpeg")
+    attachment = MIMEBase("image", "jpeg")
     file = open(IMAGE)
     attachment.set_payload(file.read())
     file.close()
-    
+
     command = "rm %s" % IMAGE
     os.system(command)
 
     Encoders.encode_base64(attachment)
     msg.attach(attachment)
-    
+
     return msg
 
 
@@ -105,5 +105,8 @@ if __name__ == '__main__':
                         default=SMART_PLUG_IP_ADDRESS,
                         help='Smart Plug IP Address')
     args = parser.parse_args()
-    msg = create_message(args.mail_to, args.subject, args.device, args.smart_plug_ip_address)
+    msg = create_message(args.mail_to,
+                         args.subject,
+                         args.device,
+                         args.smart_plug_ip_address)
     send_via_gmail(args.mail_to, msg)
