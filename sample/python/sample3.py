@@ -1,8 +1,6 @@
 import smtplib
 from email.MIMEText import MIMEText
 from email.Header import Header
-from email.Utils import formatdate
-from platform import python_version
 import argparse
 
 MAIL_FROM = 'example@gmail.com'
@@ -14,7 +12,6 @@ def create_message(to_addr, subject):
     msg = MIMEText(body, 'plain', 'utf-8')
     msg['Subject'] = Header(subject, 'utf-8')
     msg['To'] = to_addr
-    msg['Date'] = formatdate()
     return msg
 
 
