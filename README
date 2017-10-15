@@ -334,65 +334,19 @@ vim .homebridge/config.json
 #        :
 #        {
 #            "accessory": "CMD",
-#            "name": "Send Sensor Data",
-#            "on_cmd": "sh /home/pi/send_sensor_data.sh",
-#            "off_cmd": "sh /home/pi/send_sensor_data.sh"
+#            "name": "Send Data - Cabbage",
+#            "on_cmd": "python /home/pi/send_data.py -s "Environment Status - Cabbage" -D /dev/video0 -S 192.168.100.51 example@example.com",
+#            "off_cmd": "python /home/pi/send_data.py -s "Environment Status - Cabbage" -D /dev/video0 -S 192.168.100.51 example@example.com"
+#        },
+#        {
+#            "accessory": "CMD",
+#            "name": "Send Data - Broccoli",
+#            "on_cmd": "python /home/pi/send_data.py -s "Environment Status - Broccoli" -D /dev/video1 -S 192.168.100.52 example@example.com",
+#            "off_cmd": "python /home/pi/send_data.py -s "Environment Status - Broccoli" -D /dev/video1 -S 192.168.100.52 example@example.com"
 #        }
 #    ]
 #    :
 
 sudo systemctl restart homebridge
 
-vim .homebridge/config.json
 
-#    :
-#    "accessories": [
-#        :
-#        {
-#            "accessory": "CMD",
-#            "name": "Send Picture",
-#            "on_cmd": "sh /home/pi/send_picture.sh",
-#            "off_cmd": "sh /home/pi/send_picture.sh"
-#        },
-#    ]
-#    :
-
-cp RPi-Farm-Mon/sample/sample3.sh send_data_and_picture.sh
-sh /home/pi/send_data_and_picture.sh
-
-vim .homebridge/config.json
-
-#    :
-#    "accessories": [
-#        :
-#        {
-#            "accessory": "CMD",
-#            "name": "Send Environment Data",
-#            "on_cmd": "sh /home/pi/send_data_and_picture.sh",
-#            "off_cmd": "sh /home/pi/send_data_and_picture.sh"
-#        },
-#    ]
-#    :
-
-
-vim .homebridge/config.json
-
-#    :
-#    "accessories": [
-#        :
-#        {
-#            "accessory": "CMD",
-#            "name": "hs105-1",
-#            "on_cmd": "pyhs100 --ip=192.168.100.51 on",
-#            "off_cmd": "pyhs100 --ip=192.168.100.51 off"
-#        },
-#        {
-#            "accessory": "CMD",
-#            "name": "hs105-2",
-#            "on_cmd": "pyhs100 --ip=192.168.100.52 on",
-#            "off_cmd": "pyhs100 --ip=192.168.100.52 off"
-#        }
-#    ]
-#    :
-
-sudo systemctl restart homebridge
