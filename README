@@ -320,12 +320,8 @@ sudo systemctl start homebridge
 sudo systemctl enable homebridge
 sudo systemctl status homebridge
 
-
-
-
-
-
 ### E-Mail ###
+# https://qiita.com/ssh0/items/7baa0cd094d9fb7561e1
 
 sudo apt-get install -y mutt ssmtp
 sudo sh -c 'cat <<EOF > /etc/ssmtp/ssmtp.conf
