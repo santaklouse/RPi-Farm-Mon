@@ -320,20 +320,12 @@ sudo systemctl start homebridge
 sudo systemctl enable homebridge
 sudo systemctl status homebridge
 
-### E-Mail ###
+### Send E-Mail via Gmail###
 # https://qiita.com/ssh0/items/7baa0cd094d9fb7561e1
 
-sudo apt-get install -y mutt ssmtp
-sudo sh -c 'cat <<EOF > /etc/ssmtp/ssmtp.conf
-mailhub=smtp.gmail.com:587
-AuthUser=xxxxxxxx@gmail.com
-AuthPass=xxxxxxxx
-UseSTARTTLS=YES
-AuthLogin=YES
-EOF'
-
-cp RPi-Farm-Mon/sample/sample1.sh send_sensor_data.sh
-sh send_sensor_data.sh
+cp RPi-Farm-Mon/sample/python/sample3.py send_data.py
+python send_data.py -s "Environment Status - Cabbage" -D /dev/video0 -S 192.168.100.51 example@example.com
+python send_data.py -s "Environment Status - Broccoli" -D /dev/video1 -S 192.168.100.52 example@example.com
 
 vim .homebridge/config.json
 
