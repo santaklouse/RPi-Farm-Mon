@@ -335,14 +335,14 @@ vim .homebridge/config.json
 #        {
 #            "accessory": "CMD",
 #            "name": "Send Data - Cabbage",
-#            "on_cmd": "python /home/pi/send_data.py -s "Environment Status - Cabbage" -D /dev/video0 -S 192.168.100.51 example@example.com",
-#            "off_cmd": "python /home/pi/send_data.py -s "Environment Status - Cabbage" -D /dev/video0 -S 192.168.100.51 example@example.com"
+#            "on_cmd": "python /home/pi/send_data.py -s 'Environment Status - Cabbage' -D /dev/video0 -S 192.168.100.51 example@example.com >/dev/null 2>&1",
+#            "off_cmd": "python /home/pi/send_data.py -s 'Environment Status - Cabbage' -D /dev/video0 -S 192.168.100.51 example@example.com >/dev/null 2>&1"
 #        },
 #        {
 #            "accessory": "CMD",
 #            "name": "Send Data - Broccoli",
-#            "on_cmd": "python /home/pi/send_data.py -s "Environment Status - Broccoli" -D /dev/video1 -S 192.168.100.52 example@example.com",
-#            "off_cmd": "python /home/pi/send_data.py -s "Environment Status - Broccoli" -D /dev/video1 -S 192.168.100.52 example@example.com"
+#            "on_cmd": "python /home/pi/send_data.py -s 'Environment Status - Broccoli' -D /dev/video1 -S 192.168.100.52 example@example.com >/dev/null 2>&1",
+#            "off_cmd": "python /home/pi/send_data.py -s 'Environment Status - Broccoli' -D /dev/video1 -S 192.168.100.52 example@example.com >/dev/null 2>&1"
 #        }
 #    ]
 #    :
